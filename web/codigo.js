@@ -6,19 +6,28 @@ function criarAjaxGet(recurso, funcao)
                 ajax.send();
                 }
                 
-                function criarAjaxPost(recurso, funcao)
-        {console.log('entrei')
-            let nome=document.getElementById('nome').value
-            let telefone=document.getElementById('telefone').value
-            console.log(nome+telefone)
-           
-        ajax = new XMLHttpRequest();
-                ajax.onreadystatechange = funcao;
-                ajax.open("POST", recurso, true);
-                ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-                ajax.send("nome="+nome+"&telefone="+telefone);
-                
-                }
+            function criarAjaxPost(recurso)
+{
+    console.log('criarAjaxPost(' + recurso + ')');
+    let nome = document.getElementById('nome').value;
+    let telefone = document.getElementById('telefone').value;
+    
+    ajax = new XMLHttpRequest();
+    ajax.onreadystatechange = function () {
+        alertar("contato inserido!", this);
+    }
+    ajax.open("POST", recurso, true);
+    ajax.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    
+    let xml;
+    
+    xml = "xml=<Pessoa><nome>" + nome + "</nome>" +
+    "<telefone>" + telefone + "</telefone>" +
+    "<acao>Inserir</acao></Pessoa>";
+    
+    console.log(xml);
+    ajax.send(xml);
+}
 function mostrar()
         {
         if (this.readyState == 4 && this.status == 200)
