@@ -24,9 +24,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
-import org.w3c.dom.Text;
 import org.xml.sax.SAXException;
 
 /**
@@ -70,9 +68,10 @@ public class Xml {
         telefone.appendChild(doc.createTextNode(p.getTelefone()));
         
         acao.appendChild(doc.createTextNode("Consulta"));
+        pessoa.appendChild(acao);
         pessoa.appendChild(nome);
         pessoa.appendChild(telefone);
-        pessoa.appendChild(acao);
+       
         raiz.appendChild(pessoa);
       
             }
@@ -84,6 +83,46 @@ public class Xml {
             Logger.getLogger(Xml.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+   
+    
+    public void criaContato(String pessoaXml){
+       
+        
+        String gravarNome=null;
+        String gravarTelefone=null;
+        String[] arr = pessoaXml.split("<Pessoa>");
+
+    // busca na string alvo cada pedaço da string separada
+    for (String s : arr) { 
+        if (s.contains("<acao>Inserir</acao>")) {
+            String nome[]=s.split("<nome>");
+            String nomePessoa[]=nome[1].split("</nome>");
+            String telefone[]=s.split("<telefone>");
+            String telefonePessoa[]=telefone[1].split("</telefone>");
+           
+            gravarNome=nomePessoa[0];
+            
+            gravarTelefone=telefonePessoa[0];
+        }
+    }
+    
+        
+        try {
+            Pessoa p=new Pessoa();
+            PessoaDao dao = new PessoaDao();
+           p.setNome(gravarNome);
+           p.setTelefone(gravarTelefone);
+           dao.criar(p);
+            dao.sair();
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Xml.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Xml.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+    }
+    
     
      public void serealizar(PrintStream out)
     {
